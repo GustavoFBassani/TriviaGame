@@ -8,10 +8,11 @@
 import Foundation
 import AVFoundation
 
+
 var invalidMessage:String = ""
 
-func generateMenu(){
-    print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
+func generateMenu(){ //função pra printar o menu
+    //print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n")
     print("""
     =================================================================================================================
     
@@ -32,12 +33,15 @@ func generateMenu(){
     //generateSound(fileName: "ShowDoMilhaoTema.mp3" )
 }
 
-func menuOptions(optionSelected: String){
+func menuOptions(optionSelected: String){ //função pra controlar as opçoes do menu
     switch optionSelected {
-    //case "1":
+    case "1":
         //função de jogar...
+        playGame()
+        
     case "2":
-        showUsersRank()
+        //função pra imprimir o ranking
+        getRank()
     default:
         invalidMessage = "Invalid option, please try again ❌"
     }
@@ -56,5 +60,8 @@ func main(){
     print("Leaving...")
     
 }
+addRank(name: "adriel", score: 60)
+addRank(name: "gustavo", score: 10)
 
 main()
+

@@ -7,53 +7,57 @@
 
 import Foundation
 
-struct MyData: Codable { //cria um strcut Mydata, q define como vai ser os nossos dados
-    var rank: [String: Int] //tem o parametro rank
+// Dicionário de rank
+var rank: [String: Int] = [:]
+
+// Função para adicionar score ao rank
+func addRank(name: String, score: Int) {
+    var rank = UserDefaults.standard.dictionary(forKey: "rank") as? [String: Int] ?? [:] //pega o dicionario do rank antigo
+    rank.updateValue(score, forKey: name) //updatevalue no dicionario antigo
+    UserDefaults.standard.set(rank, forKey: "rank") //coloca no userdefaults o novo diiconario de ranl
 }
 
-func saveUserInRank(userName:String, score: Int) {
-    //var userRank = UserDefaults.standard.data(forKey: "rank")
-    var currentRank:[String:Int] = [:]
-    //let myData = MyData(rank: [userName:score]) //pra criar um novo usuario, a gente chamauma instancia de MyData
-    
-    do {
-        if let data = UserDefaults.standard.data(forKey: "rank"){ //pega o data antigo
-            let oldData = try JSONDecoder().decode(MyData.self, from: data) //decodifica o rank
-            currentRank = oldData.rank
-        }
-        //let data = try JSONEncoder().encode(myData) //a gente codifica a data q a gente criou usando JSONEnconder().enconde()
-        //UserDefaults.standard.set(data, forKey: "rank") //salva o dicionario q  agente converteu num data com a chave rank
-    } catch {
-        print(error.localizedDescription) //pega o erro
-    }
-    
-    currentRank[userName] = score //adiciona novo
-    
-    do{
-        let updatedData = MyData(rank: currentRank)
-        let data = try JSONEncoder().encode(updatedData)
-        UserDefaults.standard.set(data, forKey: "rank")
-    }catch{
-        print(error.localizedDescription)
+// Função para buscar o rank salvo
+func getRank() {
+    if let ranking = UserDefaults.standard.dictionary(forKey: "rank")  { //pega o ranking do user defaults
+        
+        let rankingToOrder:[String:Int] = ranking as? [String:Int] ?? [:]
+        let orderedRanking = rankingToOrder.sorted { $0.value > $1.value} //ordena o ranking por pontuação
+        
+        var opt:String = ""
+        
+        repeat{
+            print("""
+                ===============================================================
+                    ██████╗  █████╗ ███╗   ██╗██╗  ██╗██╗███╗   ██╗ ██████╗ 
+                    ██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██║████╗  ██║██╔════╝ 
+                    ██████╔╝███████║██╔██╗ ██║█████╔╝ ██║██╔██╗ ██║██║  ███╗
+                    ██╔══██╗██╔══██║██║╚██╗██║██╔═██╗ ██║██║╚██╗██║██║   ██║
+                    ██║  ██║██║  ██║██║ ╚████║██║  ██╗██║██║ ╚████║╚██████╔╝
+                    ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝ 
+                ===============================================================                                             
+                """)
+            
+            for (i,(name,score)) in orderedRanking.enumerated() { //printa todos os usuários do rank
+                if i == 0{
+                    print("🏆 \(i+1)º \(name) - \(score)")
+                }else if i == 1 {
+                    print("🥈 \(i+1)º \(name) - \(score)")
+                }else if i == 2 {
+                    print("🥉 \(i+1)º \(name) - \(score)")
+                }else{
+                    print("\(i+1)º \(name) - \(score)")
+                }
+                
+            }
+            print("==============================================================")
+            print("\n\n⬅️ Type 1 to leave the rank")
+            
+            if let inputOption = readLine() { //input de opção de sair do ranking
+                opt = inputOption
+            }
+            
+        }while(opt != "1") //fica no ranking enquanto o usuário não escolher sair
+        
     }
 }
-
-func showUsersRank() {
-    
-    
-    guard let data = UserDefaults.standard.data(forKey: "rank") else { return } //pega a data q a gente tem salva no User default na chave rank e salva na variavel data pra ver se existe
-        
-    do {
-        let myData = try JSONDecoder().decode(MyData.self, from: data) //apartir do data q a gente pegou no userDefautlt, a gente usa o JSONDecoder().decode pra decodificar a data q a gente tem guardada, q tem q ser do tipo MyData.self(A struct q a gente fez la em cima, e pega a variavel data, q é onde ta guardado nosso data codificado)
-        
-        for (username, score) in myData.rank { //usa o for pra iterar sobre o myData.rank,  q vai ser nossa lista do ranl
-            print(username, " - ", score)
-        }
-        
-    } catch {
-        print(error.localizedDescription)
-    }
-        
-    
-}
-
